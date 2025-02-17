@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InventaryController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\HomeController;
+//Ruta para el index
+
+Route::get('/', [HomeController::class, 'index']);
+
 
 // Ruta para el inventario No borrar Jared
 Route::get('/ingredientes', [InventaryController::class, 'index'])->name('ingredientes.index');
