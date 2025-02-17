@@ -51,7 +51,7 @@
               </li>
             </a>
             <!-- Calendario -->
-            <a href="{{ route('calendario.index') }}">
+            <a href="{{ route('ingredientes.index') }}">
               <li class="menu-seccion">
                 <div class="menu-icono-box">
                   <svg
@@ -68,7 +68,7 @@
               </li>
             </a>
             <!-- Recetas -->
-            <a href="{{ route('recetas.index') }}">
+            <a href="{{ route('ingredientes.index') }}">
               <li class="menu-seccion">
                 <div class="menu-icono-box">
                   <svg
@@ -102,7 +102,7 @@
               </li>
             </a>
             <!-- Postres -->
-            <a href="{{ route('postres.index') }}">
+            <a href="{{ route('ingredientes.index') }}">
               <li class="menu-seccion">
                 <div class="menu-icono-box">
                   <svg
