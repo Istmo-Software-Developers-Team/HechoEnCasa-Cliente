@@ -13,6 +13,8 @@
     <!-- Estilos  -->
     <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/inventario.css') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Inventario</title>
 </head>
@@ -171,10 +173,10 @@
                 @elseif($ingrediente->stock <= 5) casi-agotado 
                 @endif"
             onclick="abrirModal('{{ $ingrediente->id_ing }}')"
-        >
+            >
             <div class="color-header"></div>
     
-            <!-- Detalles del ingrediente -->
+        <!-- Detalles del ingrediente -->
             <div class="nombre-acciones">
                 <h2 class="nombre-elemento">{{ $ingrediente->nombre }}</h2>
                 <form action="{{ route('ingredientes.destroy', $ingrediente->id_ing) }}" method="POST" class="boton-borrar" onclick="event.stopPropagation();">
@@ -195,18 +197,26 @@
             <p class="cantidad-detalle">{{ $ingrediente->stock }} {{ $ingrediente->unidad->abreviacion ?? 'Unidad no asignada' }}</p>
         </div>
         
-                <!-- Modal para ver detalles y actualizar stock -->
-                <div class="modal fade" id="modalIngrediente{{ $ingrediente->id_ing }}" tabindex="-1" aria-labelledby="modalLabel{{ $ingrediente->id_ing }}" aria-hidden="true">
+        <!-- Modal para ver detalles y actualizar stock -->
+          <div class="modal fade" id="modalIngrediente{{ $ingrediente->id_ing }}" tabindex="-1" aria-labelledby="modalLabel{{ $ingrediente->id_ing }}" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel{{ $ingrediente->id_ing }}">{{ $ingrediente->nombre }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
+                          <div class="d-flex align-items-center">
+                            <h5 class="modal-title" id="modalLabel{{ $ingrediente->id_ing }}">
+                                <span id="nombre-ingrediente-{{ $ingrediente->id_ing }}">{{ $ingrediente->nombre }}</span>
+                                <i class="bi bi-pencil-square ms-2" onclick="enableEdit('{{ $ingrediente->id_ing }}')" style="cursor: pointer;"></i>
+                            </h5>
+                        </div>
                             <div class="modal-body">
                                 <p><strong>Disponible:</strong> <span id="stock-display-{{ $ingrediente->id_ing }}">{{ $ingrediente->stock }}</span> {{ $ingrediente->unidad->abreviacion ?? 'Unidad no asignada' }}</p>
                                 <p><strong>Máximo:</strong> {{ $ingrediente->cantidad_total }} {{ $ingrediente->unidad->abreviacion ?? 'Unidad no asignada' }}</p>
         
+                                <!-- Campo de edición del nombre con botón de guardar -->
+                                <div id="edit-container-{{ $ingrediente->id_ing }}" class="d-none mt-2">
+                                  <input type="text" id="edit-nombre-{{ $ingrediente->id_ing }}" class="form-control" value="{{ $ingrediente->nombre }}">
+                                  <button class="btn btn-primary mt-2" onclick="changeIngredientName('{{ $ingrediente->id_ing }}')">Guardar</button>
+                              </div>
+
                                 <!-- Barra de progreso -->
                                 <div class="progress">
                                     <div 
@@ -350,32 +360,74 @@
         modal.show();
     }
 
-    function updateStock(ingredienteId, cantidad) {
-        fetch(`/ingredientes/${ingredienteId}/update-stock`, {
+    // Mostrar el input y el botón de guardar
+function enableEdit(ingredienteId) {
+    document.getElementById(`nombre-ingrediente-${ingredienteId}`).classList.add('d-none');
+    document.getElementById(`edit-container-${ingredienteId}`).classList.remove('d-none');
+}
+
+// Función para cambiar el nombre del ingrediente en el backend
+async function changeIngredientName(ingredienteId, newName) {
+    try {
+        const response = await fetch(`/ingredientes/${ingredienteId}/change-name`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ nombre: newName })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        console.log('Respuesta del servidor:', data);
+
+        if (data.success) {
+            return data.newName; // Devuelve el nuevo nombre si la petición fue exitosa
+        } else {
+            alert(data.error || 'Error al actualizar el nombre.');
+            return null;
+        }
+    } catch (error) {
+        console.error('Error en la petición:', error);
+        alert('Ocurrió un error al actualizar el nombre.');
+        return null;
+    }
+}
+
+
+
+    async function updateStock(ingredienteId, cantidad) {
+    try {
+        const response = await fetch(`/ingredientes/${ingredienteId}/update-stock`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ cantidad: cantidad })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Actualizar el valor del stock en la interfaz
-                document.getElementById(`stock-display-${ingredienteId}`).textContent = data.newStock;
-
-                // Actualizar la barra de progreso
-                const progressBar = document.querySelector(`#modalIngrediente${ingredienteId} .progress-bar`);
-                progressBar.style.width = `${(data.newStock / data.maxStock) * 100}%`;
-                progressBar.setAttribute('aria-valuenow', data.newStock);
-            } else {
-                alert(data.error || 'Ocurrió un error al actualizar el stock.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Ocurrió un error al intentar actualizar el stock.');
         });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // Actualizar el valor del stock en la interfaz
+            const stockDisplay = document.getElementById(`stock-display-${ingredienteId}`);
+            stockDisplay.textContent = data.newStock;
+
+            // Actualizar la barra de progreso
+            const progressBar = document.querySelector(`#modalIngrediente${ingredienteId} .progress-bar`);
+            progressBar.style.width = `${(data.newStock / data.maxStock) * 100}%`;
+            progressBar.setAttribute('aria-valuenow', data.newStock);
+        } else {
+            alert(data.error || 'Ocurrió un error al actualizar el stock.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Ocurrió un error al intentar actualizar el stock.');
     }
+}
 </script>

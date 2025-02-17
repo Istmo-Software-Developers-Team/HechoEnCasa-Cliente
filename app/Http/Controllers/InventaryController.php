@@ -73,7 +73,24 @@ class InventaryController extends Controller
         return redirect()->back()->with('success', 'Ingrediente añadido correctamente.');
     }
     
-    // Método para actualizar el stock de un ingrediente existente
+    public function updateName(Request $request, $id)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+        ]);
+    
+        $ingrediente = Inventary::findOrFail($id);
+        $ingrediente->nombre = $request->nombre;
+        $ingrediente->save();
+    
+        return response()->json([
+            'success' => true,
+            'newName' => $ingrediente->nombre
+        ]);
+    }
+    
+    
+        // Método para actualizar el stock de un ingrediente existente
     public function updateStock(Request $request, $id_ing)
     {
         $request->validate([
@@ -101,7 +118,42 @@ class InventaryController extends Controller
             'maxStock' => $ingrediente->cantidad_total
         ]);
     }
+   // Método para modificar el nombre de un ingrediente
+   // Método para modificar el nombre de un ingrediente
+public function changeName(Request $request, $id_ing)
+{
+    // Validar los datos de entrada
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+    ]);
 
+    // Buscar el ingrediente por su ID
+    $ingrediente = Inventary::findOrFail($id_ing);
+
+    // Comprobar si ya existe un ingrediente con el mismo nombre
+    $existingIngredient = Inventary::whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])
+        ->where('id_ing', '!=', $id_ing) // Excluir el actual
+        ->first();
+
+    if ($existingIngredient) {
+        return response()->json([
+            'success' => false,
+            'error' => 'Ya existe un ingrediente con este nombre.'
+        ], 400);
+    }
+
+    // Actualizar el nombre
+    $ingrediente->nombre = $request->nombre;
+    $ingrediente->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Nombre actualizado correctamente.',
+        'newName' => $ingrediente->nombre
+    ]);
+}
+   
+   
     // Método para eliminar un ingrediente
     public function destroy($id_ing)
     {
