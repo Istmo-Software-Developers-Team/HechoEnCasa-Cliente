@@ -1,0 +1,263 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.cosas{
+    display: flex;
+    flex-direction: row;
+}
+
+.sidebar {
+    width: 80px;
+    height: 100vh;
+    background: #f8f6f3;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.sidebar div {
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+    flex: 1;
+    padding: 2em;
+    background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    margin: 2em;
+    border-radius: 1em;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: #f2f2f2;
+    padding: 10px;
+    border-radius: 10px;
+    width: 90%;
+
+}
+.search-container input {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 5px;
+}
+
+.search{
+    display: flex;
+    align-items: center;
+    background: #f2f2f2;
+    padding: 10px;
+    margin: 1em;
+    border-radius: 10px;
+}
+
+.search input {
+    border: none;
+    background: none;
+    outline: none;
+    flex: 1;
+    padding: 5px;
+}
+
+.grid {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    gap: 100px;
+    margin-top: 20px;
+    padding: 2em;
+}
+
+.card {
+    background: #fff;
+    width: 350px;
+    padding: 45px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-top: 5px solid #f5d7a5;
+    cursor: pointer;
+}
+
+#float-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: black;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0.1, 0.1, 0.1, 0.2);
+}
+
+#float-btn:hover {
+    background: #e0b87c;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s ease-in-out;
+}
+
+.modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+}
+
+.modal-header {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background: #c49a6c;
+    color: white;
+}
+
+.action-btn {
+    cursor: pointer;
+    margin: 0 5px;
+    font-weight: bold;
+}
+
+.edit-btn {
+    color: blue;
+}
+
+.delete-btn {
+    color: red;
+}
+
+.head{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.categoria-container{
+    display: flex;
+    align-content: center;
+    align-content: center;
+}
+
+#categoria{
+    font-size: 20px;
+    border-radius: 1em;
+    background-color: #f2f2f2;
+    padding: .2em;
+}
+
+#menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: none; 
+    flex-direction: column;
+    align-items: center;
+    width: 250px;
+    padding: 20px;
+    z-index: 1000; 
+}
+
+.menu-item {
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+}
+
+.menu-item input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.menu-item button {
+    width: 100%;
+    padding: 10px;
+    background-color: #f5d7a5;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menu-item button:hover {
+    background-color: #e0b87c;
+}

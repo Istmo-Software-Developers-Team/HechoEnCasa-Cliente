@@ -67,7 +67,7 @@
             </li>
           </a>
           <!-- Recetas -->
-          <a href="{{ route('ingredientes.index') }}">
+          <a href="{{ route('recipe.index') }}">
             <li class="menu-seccion">
               <div class="menu-icono-box">
                 <svg
@@ -144,7 +144,7 @@
           </div></a
         >
 
-        <a href=""
+        <a href="{{ route('recipe.index') }}"
           ><div class="caja-seccion-inicio">
             <!-- Icono  -->
             <div class="caja-inicio-icono">
