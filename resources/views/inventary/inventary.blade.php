@@ -12,8 +12,8 @@
     />
 
     <!-- Estilos  -->
-    <link rel="stylesheet" href="../CSS/main.css" />
-    <link rel="stylesheet" href="../CSS/inventario.css" />
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/inventario.css') }}">
   </head>
   <body>
     <div class="sidebar-box">
@@ -130,13 +130,11 @@
       </div>
       <!-- Elementos -->
       <section class="contenedor-elementos">
-        <script src="inventario.js"></script>
         <div class="boton-agregar" id="botonAgregar">
           <i class="bx bx-plus-circle bx-spin-hover bx-md"></i>
         </div>
       </section>
     </div>
   </body>
-
-
+  <script src="{{ asset('js/inventario.js') }}"></script>
   </html>
