@@ -4,19 +4,34 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Inventary; // Modelo Inventary
-use App\Models\Unity; // Modelo Unity
+use Illuminate\Support\Facades\DB;
 
 class InventaryController extends Controller
 {
-    //Se ven los filtros y la vista
-    public function index(Request $request)
+
+    // Método para mostrar la vista principal 
+    public function index()
+    {
+        return view('Inventary.inventary');
+    }
+
+    //Mostrar ingredientes
+    function showInventary(){
+        $recetas = DB::table('ingrediente as p')
+    ->join('unidad_ingrediente as a', 'a.id_unidad', '=', 'p.uni_total')
+    ->select('p.nombre', 'a.nombre_unidad', 'p.stock')
+    ->get();
+        return response()->json($recetas);
+    }
+    //Obtener opcion de filtro
+    public function filtro(Request $request)
     {
         // Obtener el filtro seleccionado
         $filter = $request->get('filter');
-    
+
         // Construir la consulta base
         $query = Inventary::with('unidad');
-    
+
         // Aplicar filtros según el valor seleccionado
         if ($filter === 'agotados') {
             $query->where('stock', 0); // Stock igual a 0
@@ -35,21 +50,11 @@ class InventaryController extends Controller
                 $q->where('id_unidad', 5); // uni_total igual a 5 (piezas)
             });
         }
-    
-        // Obtener los resultados
+         // Obtener los resultados
         $ingredientes = $query->get();
-    
-        // Obtener todas las unidades para el formulario
-        $unidades = Unity::all();
-    
-        // Devolver JSON
-        return response()->json([
-            'success' => true,
-            'ingredientes' => $ingredientes,
-            'unidades' => $unidades,
-        ]);
     }
-
+    
+    
     // Método para agregar un nuevo ingrediente
     public function store(Request $request)
     {
@@ -64,42 +69,37 @@ class InventaryController extends Controller
         $existingIngredient = Inventary::whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])->first();
     
         if ($existingIngredient) {
-            return response()->json([
-                'success' => false,
-                'error' => 'Ya existe un ingrediente con este nombre.',
-            ], 400);
+            return redirect()->back()->withErrors(['nombre' => 'Ya existe un ingrediente con este nombre.'])->withInput();
         }
     
         // Crear el nuevo ingrediente si no existe duplicado
-        $ingrediente = Inventary::create([
+        Inventary::create([
             'nombre' => $request->input('nombre'),
             'id_unidad' => $request->input('id_unidad'),
             'uni_total' => $request->input('id_unidad'),
             'stock' => $request->input('stock'),
         ]);
     
-        return response()->json([
-            'success' => true,
-            'message' => 'Ingrediente añadido correctamente.',
-            'ingrediente' => $ingrediente,
-        ]);
+        return redirect()->back()->with('success', 'Ingrediente añadido correctamente.');
     }
     
-    
-    //Metodo para cambiar el nombre de un ingrediente
-    public function uptadeNameIngredient(Request $request, $id_ing){
+    public function updateName(Request $request, $id)
+    {
         $request->validate([
             'nombre' => 'required|string|max:255',
         ]);
-        $ingrediente = Inventary::findOrFail($id_ing);
+    
+        $ingrediente = Inventary::findOrFail($id);
         $ingrediente->nombre = $request->nombre;
         $ingrediente->save();
+    
         return response()->json([
             'success' => true,
-            'newName' => $ingrediente->nombre,
+            'newName' => $ingrediente->nombre
         ]);
-
     }
+    
+    
     // Método para actualizar el stock de un ingrediente existente
     public function updateStock(Request $request, $id_ing)
     {
@@ -130,17 +130,13 @@ class InventaryController extends Controller
     }
   
    
-   
     // Método para eliminar un ingrediente
     public function destroy($id_ing)
     {
         $ingrediente = Inventary::findOrFail($id_ing);
         $ingrediente->delete();
-    
-        return response()->json([
-            'success' => true,
-            'message' => 'Ingrediente eliminado correctamente.',
-        ]);
+
+        return redirect()->route('ingredientes.index')->with('success', 'Ingrediente eliminado correctamente.');
     }
 
     // Método para obtener un ingrediente de forma dinámica (opcional, para AJAX)

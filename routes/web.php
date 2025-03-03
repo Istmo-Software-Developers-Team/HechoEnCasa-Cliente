@@ -16,11 +16,6 @@ Route::get('/ingredientes/{nombre}', [RecipeController::class, 'obtenerIngredien
 Route::get('/categoria/{categorianombre}', [RecipeController::class, 'obtenerCategoria']);
 
 // Ruta para el inventario No borrar Jared
-Route::prefix('ingredientes')->group(function () {
-    Route::get('/', [InventaryController::class, 'index'])->name('ingredientes.index');
-    Route::post('/', [InventaryController::class, 'store'])->name('ingredientes.store');
-    Route::patch('/{id_ing}/update-stock', [InventaryController::class, 'updateStock'])->name('ingredientes.updateStock');
-    Route::delete('/{id_ing}', [InventaryController::class, 'destroy'])->name('ingredientes.destroy');
-    Route::get('/{inventary}', [InventaryController::class, 'getIngrediente'])->name('ingredientes.get');
-
-});
+// Define la ruta que apunta al método showInventary del InventaryController
+Route::get('/ingredientes', [InventaryController::class, 'index'])->name('ingredientes.index');  
+Route::get('/ingredientes', [InventaryController::class, 'showInventary'])->name('ingredientes.showInventary');
