@@ -116,6 +116,9 @@ body {
     position: absolute;
     backdrop-filter: blur(var(--blur-cantidad));
     z-index: 110;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* == Caja de busqueda y filtros == */
@@ -227,4 +230,39 @@ body {
 
 .bx {
     transition: var(--transicion);
+}
+
+/* == Pop Up ==  */
+
+.popup {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 400px;
+    width: auto;
+    height: auto;
+    background-color: #fff;
+    box-shadow: var(--sombra-popup);
+    border-radius: var(--borde-redondeo-box);
+    gap: 10px;
+    position: relative;
+}
+
+.popup-header {
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.stock-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.disponible {
+    font-weight: bold;
+    color: #3a3a3a;
+}
+
+.stock {
+    color: rgb(133, 133, 133);
 }

@@ -25,15 +25,65 @@ class InventaryController extends Controller
         return response()->json($recetas);
     }
 
-    public function update(Request $request, $id_ing)
+
+    public function popUp(int $id)  // Aceptamos el ID como parámetro
     {
-        $ingrediente = Inventary::find($id_ing);
-        if ($ingrediente) {
-            $ingrediente->nombre = $request->nombre;
-            $ingrediente->save();
-            return response()->json(["mensaje" => "Ingrediente actualizado"]);
+        // Buscar el ingrediente por su ID
+        $ingrediente = Inventary::select('nombre', 'stock', 'cantidad_total', 'cantidad_min')
+            ->where('id_ing', $id) // Filtramos por el ID proporcionado
+            ->first();
+
+        // Si no se encuentra el ingrediente, devolvemos un error 404 detallado
+        if (!$ingrediente) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Ingrediente no encontrado',
+                'code' => 404,
+                'details' => [
+                    'requested_id' => $id,
+                    'available_ids' => Inventary::pluck('id_ing')->toArray(),  // Opcional, lista de los IDs disponibles
+                ]
+            ], 404);
         }
-        return response()->json(["error" => "Ingrediente no encontrado"], 404);
+
+        // Si el ingrediente se encuentra, lo devolvemos como respuesta JSON
+        return response()->json([
+            'error' => false,
+            'message' => 'Ingrediente encontrado',
+            'data' => $ingrediente
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $ingrediente = Inventary::findOrFail($id);
+            $cantidad = intval($request->cantidad);
+
+            if (!in_array($request->operacion, ['add', 'remove'])) {
+                return response()->json(['error' => 'Operación inválida'], 400);
+            }
+
+            if ($request->operacion === "add") {
+                $ingrediente->stock += $cantidad;
+            } elseif ($request->operacion === "remove") {
+                $ingrediente->stock = max(0, $ingrediente->stock - $cantidad);
+            }
+
+            $ingrediente->save();
+
+            return response()->json([
+                'success' => true,
+                'stock' => $ingrediente->stock
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error interno del servidor',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
+        }
     }
 
     public function destroy($id)
