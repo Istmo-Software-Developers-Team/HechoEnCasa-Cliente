@@ -1,50 +1,48 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Función para obtener los ingredientes desde la API (Laravel)
     function obtenerIngredientes() {
-        fetch('/ingredientes/show')  // Aquí es donde la API estará disponible
+        fetch('/ingredientes/show') // API Laravel
             .then(response => response.json())
             .then(data => {
-                // Llamar a la función para mostrar los ingredientes
                 mostrarIngredientes(data);
             })
             .catch(error => {
                 console.error('Error al obtener los ingredientes:', error);
             });
     }
-
+    
     // Función para mostrar los ingredientes en el HTML
     function mostrarIngredientes(ingredientes) {
         const listaIngredientes = document.querySelector(".contenedor-elementos");
 
-        // Limpiar la lista antes de agregar nuevos elementos
-        listaIngredientes.innerHTML = '';
+        listaIngredientes.innerHTML = ''; // Limpiar antes de agregar nuevos
 
-        // Iterar sobre los ingredientes y agregarlos al DOM
         ingredientes.forEach(ingrediente => {
             const div = document.createElement('div');
-            div.classList.add('caja-elemento'); // Agregar clase para estilo general
+            div.classList.add('caja-elemento');
 
-            // Añadir el header de color (se colocará arriba)
             const header = document.createElement('div');
             header.classList.add('color-header');
 
-            // Determinar el color del header basado en el stock
             if (ingrediente.stock <= 0) {
-                div.classList.add('rojo');  // Clase para ingredientes con bajo stock// Color del header rojo
-            } else if(ingrediente.stock <= ingrediente.cantidad_min){
+                div.classList.add('rojo');
+            } else if (ingrediente.stock <= ingrediente.cantidad_min) {
                 div.classList.add('amarillo');
             }
 
-            // Agregar el header a la caja de elemento
             div.appendChild(header);
 
-            // Agregar el contenido con las clases necesarias
+            // Crear estructura con botones de acción
             div.innerHTML += `
                 <div class="nombre-acciones">
-                    <h2>${ingrediente.nombre}</h2>
+                    <h2 class="nombre-ingrediente">${ingrediente.nombre}</h2>
                     <div class="acciones">
-                        <button class="boton-accion"><i class='bx bx-edit-alt bx-sm'></i></button>
-                        <button class="boton-accion"><i class='bx bx-trash bx-sm' ></i></button>
+                        <button class="boton-accion editar" data-id="${ingrediente.id}">
+                            <i class='bx bx-edit-alt bx-sm'></i>
+                        </button>
+                        <button class="boton-accion eliminar" data-id="${ingrediente.id}">
+                            <i class='bx bx-trash bx-sm'></i>
+                        </button>
                     </div>
                 </div>
                 <hr>
@@ -52,15 +50,59 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span>Stock: ${ingrediente.stock}</span>
                     <span>${ingrediente.nombre_unidad}</span>                        
                 </div>
-
             `;
 
-            // Añadir el nuevo ingrediente al contenedor
             listaIngredientes.appendChild(div);
-            
+        });
+
+        // Agregar eventos a los botones de Editar y Eliminar
+        document.querySelectorAll(".editar").forEach(boton => {
+            boton.addEventListener("click", editarIngrediente);
+        });
+
+        document.querySelectorAll(".eliminar").forEach(boton => {
+            boton.addEventListener("click", eliminarIngrediente);
         });
     }
 
-    // Llamar a la función para obtener los ingredientes cuando la página cargue
-    obtenerIngredientes();
+    // Función para editar el nombre del ingrediente
+    function editarIngrediente(event) {
+        const id = event.target.closest("button").dataset.id;
+        const nuevoNombre = prompt("Ingresa el nuevo nombre del ingrediente:");
+
+        if (nuevoNombre) {
+            fetch(`/ingredientes/update/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ nombre: nuevoNombre })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Ingrediente actualizado correctamente");
+                obtenerIngredientes(); // Recargar la lista
+            })
+            .catch(error => console.error("Error al actualizar:", error));
+        }
+    }
+
+    // Función para eliminar un ingrediente
+    function eliminarIngrediente(event) {
+        const id = event.target.closest("button").dataset.id;
+
+        if (confirm("¿Seguro que quieres eliminar este ingrediente?")) {
+            fetch(`/ingredientes/delete/${id}`, {
+                method: "DELETE",
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Ingrediente eliminado");
+                obtenerIngredientes(); // Recargar la lista
+            })
+            .catch(error => console.error("Error al eliminar:", error));
+        }
+    }
+
+    obtenerIngredientes(); // Cargar ingredientes al inicio
 });

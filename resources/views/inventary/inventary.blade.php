@@ -33,7 +33,7 @@
       <nav class="sidebar-menu">
         <ul>
           <!-- Inicio -->
-          <a href="inicio.html">
+          <a href="home">
             <li class="menu-seccion">
               <div class="menu-icono-box">
                 <svg
@@ -67,7 +67,7 @@
             </li>
           </a>
           <!-- Recetas -->
-          <a href="recetas.html">
+          <a href="recipe">
             <li class="menu-seccion">
               <div class="menu-icono-box">
                 <svg
@@ -84,7 +84,7 @@
             </li>
           </a>
           <!-- Inventario -->
-          <a href="inventario.html">
+          <a href="inventary">
             <li class="menu-seccion">
               <div class="menu-icono-box activo">
                 <svg

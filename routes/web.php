@@ -17,3 +17,6 @@ Route::get('/categoria/{categorianombre}', [RecipeController::class, 'obtenerCat
 // Ruta para el inventario No borrar Jared
 Route::get('/ingredientes', [InventaryController::class, 'index'])->name('ingredientes.index');
 Route::get('/ingredientes/show', [InventaryController::class, 'showInventary'])->name('ingredientes.showInventary');
+Route::put('/ingredientes/update/{id}', [InventaryController::class, 'update']);
+Route::delete('/ingredientes/delete/{id}', [InventaryController::class, 'destroy'])->name('ingredientes.destroy');
+

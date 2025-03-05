@@ -24,6 +24,27 @@ class InventaryController extends Controller
             ->get();
         return response()->json($recetas);
     }
+
+    public function update(Request $request, $id_ing) {
+        $ingrediente = Inventary::find($id_ing);
+        if ($ingrediente) {
+            $ingrediente->nombre = $request->nombre;
+            $ingrediente->save();
+            return response()->json(["mensaje" => "Ingrediente actualizado"]);
+        }
+        return response()->json(["error" => "Ingrediente no encontrado"], 404);
+    }
+    
+    public function destroy($id_ing) {
+        $ingrediente = Inventary::find($id_ing );
+        if ($ingrediente) {
+            $ingrediente->delete();
+            return response()->json(["mensaje" => "Ingrediente eliminado"]);
+        }
+        return response()->json(["error" => "Ingrediente no encontrado"], 404);
+    }    
+    
+
     //Obtener opcion de filtro
     public function filtro(Request $request)
     {
@@ -128,16 +149,6 @@ class InventaryController extends Controller
             'newStock' => $ingrediente->stock,
             'maxStock' => $ingrediente->cantidad_total
         ]);
-    }
-
-
-    // Método para eliminar un ingrediente
-    public function destroy($id_ing)
-    {
-        $ingrediente = Inventary::findOrFail($id_ing);
-        $ingrediente->delete();
-
-        return redirect()->route('ingredientes.index')->with('success', 'Ingrediente eliminado correctamente.');
     }
 
     // Método para obtener un ingrediente de forma dinámica (opcional, para AJAX)
