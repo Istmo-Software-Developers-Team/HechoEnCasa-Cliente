@@ -147,17 +147,23 @@
   </html>
 
   <script>
-        function searchIngredients() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        const ingredientes = document.querySelectorAll('.caja-elemento');
+function searchIngredients() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const ingredientes = document.querySelectorAll('.caja-elemento');
 
-        ingredientes.forEach(ingrediente => {
-            const nombre = ingrediente.querySelector('.nombre-ingrediente').textContent.toLowerCase();
-            if (nombre.includes(query)) {
-                ingrediente.style.display = 'block';
-            } else {
-                ingrediente.style.display = 'none';
-            }
-        });
+    function removeAccents(str) {
+        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
+
+    ingredientes.forEach(ingrediente => {
+        const nombre = ingrediente.querySelector('.nombre-ingrediente').textContent.toLowerCase();
+        
+        if (removeAccents(nombre).includes(removeAccents(query))) {
+            ingrediente.style.display = 'block';
+        } else {
+            ingrediente.style.display = 'none';
+        }
+    });
+}
+
   </script>
