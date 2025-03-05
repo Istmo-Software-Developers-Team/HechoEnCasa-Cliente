@@ -123,10 +123,15 @@
     </div>
     <div class="main-box">
       <div class="caja-filtrar-buscar">
-        <div class="caja-buscar">
-          <input type="text" placeholder="Busca folios aquí..." />
-          <span><i class="bx bx-search bx-sm"></i></span>
-        </div>
+      <div class="caja-buscar">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="" 
+                    placeholder="Buscar ingredientes..." 
+                    oninput="searchIngredients()" 
+                />
+            </div>
         <div class="caja-filtrar"><i class="bx bx-filter bx-md"></i></div>
       </div>
       <!-- Elementos -->
@@ -140,3 +145,19 @@
   </body>
   <script src="{{ asset('js/inventario.js') }}"></script>
   </html>
+
+  <script>
+        function searchIngredients() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const ingredientes = document.querySelectorAll('.caja-elemento');
+
+        ingredientes.forEach(ingrediente => {
+            const nombre = ingrediente.querySelector('.nombre-ingrediente').textContent.toLowerCase();
+            if (nombre.includes(query)) {
+                ingrediente.style.display = 'block';
+            } else {
+                ingrediente.style.display = 'none';
+            }
+        });
+    }
+  </script>
