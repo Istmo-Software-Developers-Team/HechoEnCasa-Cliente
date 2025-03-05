@@ -84,6 +84,15 @@ class InventaryController extends Controller
                 'file' => $e->getFile()
             ], 500);
         }
+        $ingrediente = Inventary::find($id_ing);
+
+        if ($ingrediente) {
+            $ingrediente->nombre = $request->nombre;
+            $ingrediente->save();
+            return response()->json(["mensaje" => "Ingrediente actualizado"]);
+        }
+
+        return response()->json(["error" => "Ingrediente no encontrado"], 404);
     }
 
     public function destroy($id)
