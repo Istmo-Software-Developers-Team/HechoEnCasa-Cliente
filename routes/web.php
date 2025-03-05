@@ -19,4 +19,5 @@ Route::get('/ingredientes', [InventaryController::class, 'index'])->name('ingred
 Route::get('/ingredientes/show', [InventaryController::class, 'showInventary'])->name('ingredientes.showInventary');
 Route::get('/ingredientes/popUp/{id}', [InventaryController::class, 'popUp'])->name('ingredientes.popUp');
 Route::put('/ingredientes/update/{id}', [InventaryController::class, 'update'])->name('ingredientes.update');
+Route::put('/ingredientes/updateName/{id}', [InventaryController::class, 'updateName'])->name('ingredientes.updateName');
 Route::delete('/ingredientes/delete/{id}', [InventaryController::class, 'destroy'])->name('ingredientes.destroy');

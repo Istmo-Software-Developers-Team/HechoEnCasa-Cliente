@@ -65,11 +65,13 @@ document.addEventListener('DOMContentLoaded', function () {
             boton.addEventListener("click", eliminarIngrediente);
         });
 
+        // Agregar evento a los elementos de ingredientes
         document.querySelectorAll(".caja-elemento").forEach(caja => {
             caja.addEventListener("click", abrirPopupIngrediente);
         });
     }
 
+    // Función para cerrar el pop-up
     function cerrarPopup() {
         const blurBox = document.querySelector('.blur-box');
         if (blurBox) {
@@ -77,13 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function cerrarPopup() {
-        const blurBox = document.querySelector('.blur-box');
-        if (blurBox) {
-            blurBox.remove(); // Esto elimina el pop-up y el fondo borroso
-        }
-    }
-    
+    // Función para abrir el pop-up
     function abrirPopupIngrediente(event) {
         const id = event.currentTarget.dataset.id; // Obtener ID del ingrediente
         fetch(`/ingredientes/popUp/${id}`) // Llamada a API para obtener datos
@@ -167,48 +163,42 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error("Error al obtener ingrediente:", error));
     }    
-    
+
     // Función para editar el nombre del ingrediente
-// Función para editar el nombre del ingrediente
-function editarIngrediente(event) {
-    const id = event.target.closest("button").dataset.id;
-    const nuevoNombre = prompt("Ingresa el nuevo nombre del ingrediente:");
+    function editarIngrediente(event) {
+        event.stopPropagation(); // Evita que se abra el pop-up al editar
+        const id = event.target.closest("button").dataset.id;
+        const nuevoNombre = prompt("Ingresa el nuevo nombre del ingrediente:");
 
-    if (nuevoNombre) {
-        fetch(`/ingredientes/update/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF Token
-            },
-            body: JSON.stringify({ nombre: nuevoNombre })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Error al actualizar el ingrediente");
-            }
-            return response.json();
-        })
-        .then(data => {
-            alert("Ingrediente actualizado correctamente");
-            obtenerIngredientes(); // Recargar la lista
-        })
-        .catch(error => {
-            console.error("Error al actualizar:", error);
-            alert("Hubo un error al actualizar el ingrediente. Por favor, intenta nuevamente.");
-        });
+        if (nuevoNombre) {
+            fetch(`/ingredientes/updateName/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF Token
+                },
+                body: JSON.stringify({ nombre: nuevoNombre })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al actualizar el ingrediente");
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert("Ingrediente actualizado correctamente");
+                obtenerIngredientes(); // Recargar la lista
+            })
+            .catch(error => {
+                console.error("Error al actualizar:", error);
+                alert("Hubo un error al actualizar el ingrediente. Por favor, intenta nuevamente.");
+            });
+        }
     }
-}
 
-// Asignar event listeners a los botones de editar
-document.addEventListener("DOMContentLoaded", function() {
-    const botonesEditar = document.querySelectorAll(".editar");
-    botonesEditar.forEach(boton => {
-        boton.addEventListener("click", editarIngrediente);
-    });
-});
-
+    // Función para eliminar un ingrediente
     function eliminarIngrediente(event) {
+        event.stopPropagation(); // Evita que se abra el pop-up al eliminar
         const id = event.target.closest("button").dataset.id;
     
         if (confirm("¿Seguro que quieres eliminar este ingrediente?")) {
@@ -227,7 +217,6 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error("Error al eliminar:", error));
         }
     }
-    
+
     obtenerIngredientes(); // Cargar ingredientes al inicio
-    
 });
