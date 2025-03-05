@@ -130,10 +130,11 @@
       </div>
       <!-- Elementos -->
       <section class="contenedor-elementos">
-        <div class="boton-agregar" id="botonAgregar">
-          <i class="bx bx-plus-circle bx-spin-hover bx-md"></i>
-        </div>
+
       </section>
+      <div class="boton-agregar" id="botonAgregar">
+        <i class="bx bx-plus-circle bx-spin-hover bx-md"></i>
+      </div>
     </div>
   </body>
   <script src="{{ asset('js/inventario.js') }}"></script>

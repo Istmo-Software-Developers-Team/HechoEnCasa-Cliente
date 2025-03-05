@@ -15,6 +15,5 @@ Route::get('/recetas/lista', [RecipeController::class, 'showrecipe']);
 Route::get('/categoria/{categorianombre}', [RecipeController::class, 'obtenerCategoria']);
 
 // Ruta para el inventario No borrar Jared
-// Define la ruta que apunta al método showInventary del InventaryController
 Route::get('/ingredientes', [InventaryController::class, 'index'])->name('ingredientes.index');
 Route::get('/ingredientes/show', [InventaryController::class, 'showInventary'])->name('ingredientes.showInventary');

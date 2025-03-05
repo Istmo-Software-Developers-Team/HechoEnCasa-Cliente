@@ -177,6 +177,7 @@ body {
     padding: 1rem;
     scrollbar-width: auto;
     scrollbar-color: #c9c9c9 #f0f0f0;
+    position: relative;
 }
 
 .caja-elemento {
@@ -206,7 +207,6 @@ body {
     width: 4rem;
     height: 4rem;
     position: absolute;
-    position: fixed;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -216,8 +216,8 @@ body {
     z-index: 110;
     color: var(--boton-agregar-color);
     cursor: pointer;
-    right: 6rem;
-    bottom: 4rem;
+    right: 8rem;
+    bottom: 2rem;
     transition: var(--transicion);
 }
 
