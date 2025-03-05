@@ -20,12 +20,13 @@ class InventaryController extends Controller
     {
         $recetas = DB::table('ingrediente as p')
             ->join('unidad_ingrediente as a', 'a.id_unidad', '=', 'p.uni_total')
-            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min','p.id_ing')
+            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min', 'p.id_ing')
             ->get();
         return response()->json($recetas);
     }
 
-    public function update(Request $request, $id_ing) {
+    public function update(Request $request, $id_ing)
+    {
         $ingrediente = Inventary::find($id_ing);
         if ($ingrediente) {
             $ingrediente->nombre = $request->nombre;
@@ -34,16 +35,27 @@ class InventaryController extends Controller
         }
         return response()->json(["error" => "Ingrediente no encontrado"], 404);
     }
-    //Eliminar un ingrediente 
-    public function destroy($id_ing) {
-        $ingrediente = Inventary::find($id_ing );
-        if ($ingrediente) {
+
+    public function destroy($id)
+    {
+        try {
+            $ingrediente = Inventary::find($id);
+
+            if (!$ingrediente) {
+                return response()->json(["error" => "Ingrediente no encontrado"], 404);
+            }
+
+            DB::table('receta_detalle')->where('id_ing', $id)->delete();
+
             $ingrediente->delete();
-            return response()->json(["mensaje" => "Ingrediente eliminado"]);
+
+            return response()->json(["mensaje" => "Ingrediente eliminado correctamente"], 200);
+        } catch (\Exception $e) {
+            return response()->json(["error" => "Error al eliminar ingrediente", "detalle" => $e->getMessage()], 500);
         }
-        return response()->json(["error" => "Ingrediente no encontrado"], 404);
-    }    
-    
+    }
+
+
 
     //Obtener opcion de filtro
     public function filtro(Request $request)
