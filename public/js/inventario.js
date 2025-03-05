@@ -65,27 +65,44 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Función para editar el nombre del ingrediente
-    function editarIngrediente(event) {
-        const id = event.target.closest("button").dataset.id;
-        const nuevoNombre = prompt("Ingresa el nuevo nombre del ingrediente:");
+// Función para editar el nombre del ingrediente
+function editarIngrediente(event) {
+    const id = event.target.closest("button").dataset.id;
+    const nuevoNombre = prompt("Ingresa el nuevo nombre del ingrediente:");
 
-        if (nuevoNombre) {
-            fetch(`/ingredientes/update/${id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ nombre: nuevoNombre })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert("Ingrediente actualizado correctamente");
-                obtenerIngredientes(); // Recargar la lista
-            })
-            .catch(error => console.error("Error al actualizar:", error));
-        }
+    if (nuevoNombre) {
+        fetch(`/ingredientes/update/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content') // CSRF Token
+            },
+            body: JSON.stringify({ nombre: nuevoNombre })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error al actualizar el ingrediente");
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert("Ingrediente actualizado correctamente");
+            obtenerIngredientes(); // Recargar la lista
+        })
+        .catch(error => {
+            console.error("Error al actualizar:", error);
+            alert("Hubo un error al actualizar el ingrediente. Por favor, intenta nuevamente.");
+        });
     }
+}
+
+// Asignar event listeners a los botones de editar
+document.addEventListener("DOMContentLoaded", function() {
+    const botonesEditar = document.querySelectorAll(".editar");
+    botonesEditar.forEach(boton => {
+        boton.addEventListener("click", editarIngrediente);
+    });
+});
 
     function eliminarIngrediente(event) {
         const id = event.target.closest("button").dataset.id;
@@ -109,4 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
 
     obtenerIngredientes(); // Cargar ingredientes al inicio
+
+    
 });

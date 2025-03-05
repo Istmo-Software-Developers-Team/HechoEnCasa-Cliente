@@ -28,11 +28,13 @@ class InventaryController extends Controller
     public function update(Request $request, $id_ing)
     {
         $ingrediente = Inventary::find($id_ing);
+
         if ($ingrediente) {
             $ingrediente->nombre = $request->nombre;
             $ingrediente->save();
             return response()->json(["mensaje" => "Ingrediente actualizado"]);
         }
+
         return response()->json(["error" => "Ingrediente no encontrado"], 404);
     }
 
