@@ -20,7 +20,7 @@ class InventaryController extends Controller
     {
         $recetas = DB::table('ingrediente as p')
             ->join('unidad_ingrediente as a', 'a.id_unidad', '=', 'p.uni_total')
-            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min')
+            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min','p.id_ing')
             ->get();
         return response()->json($recetas);
     }
@@ -34,7 +34,7 @@ class InventaryController extends Controller
         }
         return response()->json(["error" => "Ingrediente no encontrado"], 404);
     }
-    
+    //Eliminar un ingrediente 
     public function destroy($id_ing) {
         $ingrediente = Inventary::find($id_ing );
         if ($ingrediente) {

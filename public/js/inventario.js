@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error al obtener los ingredientes:', error);
             });
     }
-    
+
     // Función para mostrar los ingredientes en el HTML
     function mostrarIngredientes(ingredientes) {
         const listaIngredientes = document.querySelector(".contenedor-elementos");
@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="nombre-acciones">
                     <h2 class="nombre-ingrediente">${ingrediente.nombre}</h2>
                     <div class="acciones">
-                        <button class="boton-accion editar" data-id="${ingrediente.id}">
+                        <button class="boton-accion editar" data-id="${ingrediente.id_ing}">
                             <i class='bx bx-edit-alt bx-sm'></i>
                         </button>
-                        <button class="boton-accion eliminar" data-id="${ingrediente.id}">
+                        <button class="boton-accion eliminar" data-id="${ingrediente.id_ing}">
                             <i class='bx bx-trash bx-sm'></i>
                         </button>
                     </div>
@@ -87,13 +87,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Función para eliminar un ingrediente
     function eliminarIngrediente(event) {
         const id = event.target.closest("button").dataset.id;
-
+    
         if (confirm("¿Seguro que quieres eliminar este ingrediente?")) {
             fetch(`/ingredientes/delete/${id}`, {
                 method: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    "Content-Type": "application/json"
+                }
             })
             .then(response => response.json())
             .then(data => {
@@ -103,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error("Error al eliminar:", error));
         }
     }
+    
 
     obtenerIngredientes(); // Cargar ingredientes al inicio
 });
