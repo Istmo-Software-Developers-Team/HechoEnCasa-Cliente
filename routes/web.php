@@ -4,10 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InventaryController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Models\Inventary;
 
 //Ruta para el index
 Route::get('/', [HomeController::class, 'index']);
+
+//Ruta para las notificaciones
+Route::get('/notificaciones/show', [NotificationController::class, 'ShowNotifications']);
+Route::get('/notificaciones/count', [NotificationController::class, 'countNotifications']);
 
 //Rutas de recetas
 Route::get('recetas', [RecipeController::class, 'index'])->name('recipe.index');

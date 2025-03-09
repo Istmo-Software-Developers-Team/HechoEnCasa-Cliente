@@ -266,3 +266,85 @@ body {
 .stock {
     color: rgb(133, 133, 133);
 }
+
+/* == Estilos de las notificaciones ==  */
+
+.noti-icon {
+    position: relative;
+}
+
+.notification-counter {
+    position: absolute;
+    background-color: var(--ingrediente-vacio);
+    border-radius: 50%;
+    color: #fff;
+    font-weight: bold;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    top: 10%;
+    right: 15%;
+}
+
+.notifications-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    top: -15px;
+    left: 160%;
+    border-radius: var(--borde-redondeo-box);
+    padding: 1rem;
+    box-shadow: var(--main-sombra);
+    background-color: #fff;
+
+    max-height: 93vh;
+    overflow-y: auto;
+    min-width: 300px;
+}
+
+.noti-element {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    border-radius: var(--borde-redondeo-box);
+    overflow: hidden;
+    box-shadow: var(--notificacion-sombra);
+    padding: 1rem 1rem 5px 1rem;
+    background-color: #fff;
+
+    flex-shrink: 0;
+}
+
+.noti-header {
+    position: absolute;
+    height: 10px;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.noti-header.empty {
+    background-color: var(--ingrediente-vacio);
+}
+
+.noti-header.almost-empty {
+    background-color: var(--ingrediente-casi-vacio);
+}
+
+.ing-name {
+    font-size: 14px;
+}
+
+.status-msg {
+    font-size: 14px;
+    color: #727272;
+}
+
+.current-stock {
+    font-size: 12px;
+    color: #727272;
+}

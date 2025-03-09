@@ -23,6 +23,13 @@
     --icono-hover-fondo: #fff4d9;
 }
 
+/* NOTIFICACIONES */
+:root {
+    --notificacion-sombra: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    --ingrediente-vacio: #f36b6b;
+    --ingrediente-casi-vacio: #e2c401;
+}
+
 /* CONTENEDOR PRINCIPAL  */
 :root {
     --main-sombra: 0 0 10px 5px rgba(0, 0, 0, 0.08);

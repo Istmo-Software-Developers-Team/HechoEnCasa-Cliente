@@ -18,7 +18,7 @@
   <body>
     <div class="sidebar-box">
       <!-- Notificaciones -->
-      <div class="menu-icono-box">
+      <div class="menu-icono-box noti-icon" id="notificationButton">
         <svg
           class="menu-icono bx-tada-hover"
           viewBox="0 0 64 64"
@@ -177,6 +177,7 @@
       </section>
     </div>
   </body>
+  <script src="{{ asset('js/notification.js') }}"></script>
   <script>
       function actualizarFechaHora() {
       const fechaElemento = document.getElementById("fecha-banner");
