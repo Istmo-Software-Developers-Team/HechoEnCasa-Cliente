@@ -5,6 +5,7 @@ use App\Http\Controllers\InventaryController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DessertsController;
 use App\Models\Inventary;
 
 //Ruta para el index
@@ -26,3 +27,6 @@ Route::get('/ingredientes/popUp/{id}', [InventaryController::class, 'popUp'])->n
 Route::put('/ingredientes/update/{id}', [InventaryController::class, 'update'])->name('ingredientes.update');
 Route::put('/ingredientes/updateName/{id}', [InventaryController::class, 'updateName'])->name('ingredientes.updateName');
 Route::delete('/ingredientes/delete/{id}', [InventaryController::class, 'destroy'])->name('ingredientes.destroy');
+
+//rutas para los postres
+Route::resource('postres', 'App\Http\Controllers\DessertsController');

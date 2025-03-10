@@ -101,7 +101,7 @@
             </li>
           </a>
           <!-- Postres -->
-          <a href="{{ route('ingredientes.index') }}">
+          <a href="{{ route('postres.index') }}">
             <li class="menu-seccion">
               <div class="menu-icono-box">
                 <svg
@@ -164,8 +164,8 @@
             <div class="caja-inicio-texto"><h1>Inventario</h1></div>
           </div></a
         >
-        <a href=""
-          ><div class="caja-seccion-inicio">
+        <a href="{{ route('postres.index') }}">
+          <div class="caja-seccion-inicio">
             <!-- Icono  -->
             <div class="caja-inicio-icono">
               <i class='bx bx-cake icon-home'></i>
