@@ -1,0 +1,113 @@
+@import "variables.css";
+
+/* Banner  */
+
+.inicio-banner {
+    width: 100%;
+    height: 40%;
+    background: var(--banner-gradiente);
+    border-radius: var(--borde-redondeo-box);
+    box-shadow: var(--banner-sombra);
+}
+
+.banner-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+}
+
+.banner-contenido h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 0.5rem;
+}
+
+.inicio-fecha-hora {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.fecha,
+.hora {
+    background-color: var(--fecha-hora-fondo);
+    color: var(--fecha-hora-texto-color);
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+}
+
+/* Botones Secciones  */
+
+.cajas-secciones {
+    width: 100%;
+    height: 60%;
+    display: flex;
+    justify-content: space-between;
+    gap: 3rem;
+}
+
+.cajas-secciones a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.caja-seccion-inicio {
+    width: 100%;
+    height: 100%;
+    border-radius: var(--borde-redondeo-box);
+    box-shadow: var(--inicio-icono-sombra);
+    cursor: pointer;
+}
+
+.caja-inicio-icono {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 75%;
+    padding: 3rem;
+    transition: var(--transicion);
+    color: var(--inicio-icono-color);
+    font-size: 9rem;
+}
+
+.caja-inicio-texto {
+    display: flex;
+    width: 100%;
+    height: 25%;
+    justify-content: center;
+    align-items: center;
+    color: var(--inicio-icono-color);
+    font-size: 1.5rem;
+    padding: 1rem;
+    transition: var(--transicion);
+}
+
+.icono-inicio {
+    fill: none;
+    stroke-width: 9px;
+    stroke: var(--inicio-icono-color);
+    transition: var(--transicion);
+}
+
+.caja-seccion-inicio:hover .caja-inicio-icono {
+    padding: 2rem;
+}
+.caja-seccion-inicio:hover .icono-inicio {
+    stroke: var(--inicio-icono-color-hover);
+}
+.caja-seccion-inicio:hover .caja-inicio-texto {
+    color: var(--inicio-icono-color-hover);
+}
+
+.caja-inicio-icono:hover .bx {
+    color: var(--inicio-icono-color-hover);
+}

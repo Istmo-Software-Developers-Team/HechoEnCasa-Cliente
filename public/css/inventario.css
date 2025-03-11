@@ -1,0 +1,227 @@
+@import "variables.css";
+
+/* Caja de un ingrediente  */
+.nombre-acciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nombre-acciones h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 180px;
+    font-size: 1rem;
+}
+
+.cantidad-unidad {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: var(--color-texto-elemento);
+}
+
+.acciones {
+    display: flex;
+}
+
+.boton-accion {
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-texto-elemento);
+    cursor: pointer;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 5px;
+    transition: var(--transicion);
+}
+.boton-accion:hover {
+    background-color: var(--accion-hover);
+}
+
+hr {
+    color: var(--color-texto-elemento);
+}
+
+.caja-elemento.amarillo {
+    background-color: var(--ingrediente-amarillo);
+    border: 1px solid var(--ingrediente-amarrilo-linea);
+}
+
+.caja-elemento.rojo {
+    background-color: var(--ingrediente-rojo);
+    border: 1px solid var(--ingrediente-rojo-linea);
+}
+
+.progress-bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+progress {
+    width: 100%;
+    height: 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    background-color: #f3f3f3;
+    border-radius: 10px;
+}
+
+progress::-webkit-progress-value {
+    background-color: #4caf50;
+    border-radius: 10px;
+}
+
+progress::-moz-progress-bar {
+    background-color: #4caf50;
+    border-radius: 10px;
+}
+
+.progress-value {
+    margin-top: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+progress.rojo::-webkit-progress-value {
+    background-color: #ff4c4c; /* Rojo */
+    border-radius: 10px;
+}
+
+/* Color para la barra de progreso cuando está en estado 'amarillo' */
+progress.amarillo::-webkit-progress-value {
+    background-color: #ffcc00; /* Amarillo */
+    border-radius: 10px;
+}
+
+/* Color para la barra de progreso cuando está en estado 'verde' */
+progress.verde::-webkit-progress-value {
+    background-color: #4caf50; /* Verde */
+    border-radius: 10px;
+}
+
+.update-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.update-stock {
+    flex: 1;
+    height: 32px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 3px;
+}
+
+.buttons-ing {
+    display: flex;
+    gap: 4px;
+}
+
+.button-ing {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.add {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.remove:hover {
+    background-color: #c0392b;
+}
+
+.add:hover {
+    background-color: #27ae60;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.available {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    background-color: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #2ecc71;
+    width: 50%;
+}
+
+.popup .btns {
+    display: flex; /* Usamos flexbox para alinear el contenido */
+    justify-content: flex-end; /* Alineamos el contenido hacia la derecha */
+    margin-top: 20px; /* Agregamos un margen superior para que el botón no esté tan pegado */
+}
+
+.popup .btn-aceptar {
+    background-color: #bb1b15; /* Color de fondo del botón */
+    color: white; /* Color del texto del botón */
+    border: none; /* Quitamos el borde */
+    padding: 10px 20px; /* Agregamos un poco de espacio alrededor del texto */
+    border-radius: 5px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de fuente */
+    cursor: pointer; /* Cambiar el cursor para indicar que es un botón clickeable */
+    transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+.popup .btn-aceptar:hover {
+    background-color: #db371b; /* Color del botón cuando se pasa el mouse por encima */
+}
+
+.popup .btn-aceptar:focus {
+    outline: none; /* Quitamos el borde del foco */
+}

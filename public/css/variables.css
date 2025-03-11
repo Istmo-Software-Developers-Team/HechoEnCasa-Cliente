@@ -1,0 +1,105 @@
+/* Archivo reservado exclusivamente para variables en CSS  */
+
+/* GENERAL  */
+:root {
+    --fuente: "Poppins", serif; /* Fuente de texto */
+    --color-pagina: #fff; /* Color del fondo de la página */
+    --transicion: all 0.3s ease-in-out; /* Formato de transiciones */
+    --borde-redondeo-box: 10px; /* Redondeo del borde de las cajas (iconos, recetas, ingredientes, etc.) */
+}
+
+/* SIDEBAR  */
+:root {
+    --sidebar-ancho: 8rem;
+    --sidebar-color: #fff;
+    --texto-sidebar-color: #c3a780;
+    --sidebar-sombra: 1px 0 10px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* ICONOS  */
+:root {
+    --icono-color: #c3a780;
+    --icono-activo-fondo: #ffecbb;
+    --icono-hover-fondo: #fff4d9;
+}
+
+/* NOTIFICACIONES */
+:root {
+    --notificacion-sombra: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+    --ingrediente-vacio: #f36b6b;
+    --ingrediente-casi-vacio: #e2c401;
+}
+
+/* CONTENEDOR PRINCIPAL  */
+:root {
+    --main-sombra: 0 0 10px 5px rgba(0, 0, 0, 0.08);
+    --borde-redondeo-main: 10px 10px 0 0;
+    --main-padding: 3rem;
+    --main-gap: 2rem;
+}
+
+/* FONDO DESENFOCADO  */
+:root {
+    --blur-cantidad: 3px;
+}
+
+/* INICIO  */
+:root {
+    --banner-color-izq: rgb(255, 197, 104, 0.2);
+    --banner-color-der: rgb(252, 255, 60, 0.2);
+    --banner-gradiente: linear-gradient(
+        to right,
+        var(--banner-color-izq),
+        var(--banner-color-der)
+    );
+    --banner-sombra: 0 2px 4px 0 rgba(0, 0, 0, 0.25);
+    --fecha-hora-texto-color: #bebaa6;
+    --fecha-hora-fondo: #eee9d0;
+
+    --inicio-icono-sombra: 0 0 10px 1px rgba(0, 0, 0, 0.15);
+    --inicio-icono-color: #8a8a8e;
+    --inicio-icono-color-hover: #b2b2b3;
+}
+
+/* CALENDARIO  */
+:root {
+    --caja-pedidos-ancho: 15rem;
+
+    --buscar-redondeo: 50px;
+    --buscar-sombra: 0 0 10px 0 rgba(0, 0, 0, 0.25);
+    --lupa-color: #757575;
+
+    --pedido-sombra: 2px 2px 4px 0 rgba(0, 0, 0, 0.1);
+    --pedido-hover: #f0f8ff;
+
+    --folio-color: #eaddff;
+    --folio-texto: #4f378a;
+    --folio-pers: #fcbd8d;
+}
+
+/* ELEMENTO (Receta, Ingrediente, Producto, etc.) */
+:root {
+    --elemento-sombra: 2px 2px 10px 0 rgba(0, 0, 0, 0.2);
+    --color-texto-elemento: #959292;
+    --color-header: #f1d99b;
+    --accion-hover: rgba(241, 217, 155, 0.5);
+}
+
+/* INGREDIENTES  */
+:root {
+    --ingrediente-amarillo: #fff4c7;
+    --ingrediente-amarrilo-linea: #d0b60c;
+
+    --ingrediente-rojo: #ffcfcf;
+    --ingrediente-rojo-linea: #f53d3d;
+}
+
+/* BOTÓN AGREGAR  */
+:root {
+    --boton-agregar-sombra: 2px 2px 10px 0 rgba(0, 0, 0, 0.2);
+    --boton-agregar-color: #f2f2f2;
+}
+
+:root {
+    --sombra-popup: 0px 0px 10px 5px rgba(0, 0, 0, 0.25);
+}

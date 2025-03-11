@@ -4,12 +4,120 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Inventary; // Modelo Inventary
-use App\Models\Unity; // Modelo Unity
+use Illuminate\Support\Facades\DB;
 
 class InventaryController extends Controller
 {
-    // Método para mostrar la vista principal con todos los ingredientes y filtros
-    public function index(Request $request)
+
+    // Método para mostrar la vista principal 
+    public function index()
+    {
+        return view('Inventary.inventary');
+    }
+
+    //Mostrar ingredientes
+    function showInventary()
+    {
+        $recetas = DB::table('ingrediente as p')
+            ->join('unidad_ingrediente as a', 'a.id_unidad', '=', 'p.uni_total')
+            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min', 'p.id_ing')
+            ->get();
+        return response()->json($recetas);
+    }
+
+
+    public function popUp(int $id)  // Aceptamos el ID como parámetro
+    {
+        // Buscar el ingrediente por su ID
+        $ingrediente = Inventary::select('nombre', 'stock', 'cantidad_total', 'cantidad_min')
+            ->where('id_ing', $id) // Filtramos por el ID proporcionado
+            ->first();
+
+        // Si no se encuentra el ingrediente, devolvemos un error 404 detallado
+        if (!$ingrediente) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Ingrediente no encontrado',
+                'code' => 404,
+                'details' => [
+                    'requested_id' => $id,
+                    'available_ids' => Inventary::pluck('id_ing')->toArray(),  // Opcional, lista de los IDs disponibles
+                ]
+            ], 404);
+        }
+
+        // Si el ingrediente se encuentra, lo devolvemos como respuesta JSON
+        return response()->json([
+            'error' => false,
+            'message' => 'Ingrediente encontrado',
+            'data' => $ingrediente
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $ingrediente = Inventary::findOrFail($id);
+            $cantidad = intval($request->cantidad);
+
+            if (!in_array($request->operacion, ['add', 'remove'])) {
+                return response()->json(['error' => 'Operación inválida'], 400);
+            }
+
+            if ($request->operacion === "add") {
+                $ingrediente->stock += $cantidad;
+            } elseif ($request->operacion === "remove") {
+                $ingrediente->stock = max(0, $ingrediente->stock - $cantidad);
+            }
+
+            $ingrediente->save();
+
+            return response()->json([
+                'success' => true,
+                'stock' => $ingrediente->stock
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Error interno del servidor',
+                'message' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile()
+            ], 500);
+        }
+        $ingrediente = Inventary::find($id_ing);
+
+        if ($ingrediente) {
+            $ingrediente->nombre = $request->nombre;
+            $ingrediente->save();
+            return response()->json(["mensaje" => "Ingrediente actualizado"]);
+        }
+
+        return response()->json(["error" => "Ingrediente no encontrado"], 404);
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $ingrediente = Inventary::find($id);
+
+            if (!$ingrediente) {
+                return response()->json(["error" => "Ingrediente no encontrado"], 404);
+            }
+
+            DB::table('receta_detalle')->where('id_ing', $id)->delete();
+
+            $ingrediente->delete();
+
+            return response()->json(["mensaje" => "Ingrediente eliminado correctamente"], 200);
+        } catch (\Exception $e) {
+            return response()->json(["error" => "Error al eliminar ingrediente", "detalle" => $e->getMessage()], 500);
+        }
+    }
+
+
+
+    //Obtener opcion de filtro
+    public function filtro(Request $request)
     {
         // Obtener el filtro seleccionado
         $filter = $request->get('filter');
@@ -35,15 +143,10 @@ class InventaryController extends Controller
                 $q->where('id_unidad', 5); // uni_total igual a 5 (piezas)
             });
         }
-
         // Obtener los resultados
         $ingredientes = $query->get();
-
-        // Obtener todas las unidades para el formulario
-        $unidades = Unity::all();
-
-        return view('Inventary.inventary', compact('ingredientes', 'unidades'));
     }
+
 
     // Método para agregar un nuevo ingrediente
     public function store(Request $request)
@@ -54,14 +157,14 @@ class InventaryController extends Controller
             'id_unidad' => 'required|integer|exists:unidad_ingrediente,id_unidad',
             'stock' => 'required|integer|min:0',
         ]);
-    
+
         // Comprobar si ya existe un ingrediente con el mismo nombre (insensible a mayúsculas/minúsculas)
         $existingIngredient = Inventary::whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])->first();
-    
+
         if ($existingIngredient) {
             return redirect()->back()->withErrors(['nombre' => 'Ya existe un ingrediente con este nombre.'])->withInput();
         }
-    
+
         // Crear el nuevo ingrediente si no existe duplicado
         Inventary::create([
             'nombre' => $request->input('nombre'),
@@ -69,28 +172,28 @@ class InventaryController extends Controller
             'uni_total' => $request->input('id_unidad'),
             'stock' => $request->input('stock'),
         ]);
-    
+
         return redirect()->back()->with('success', 'Ingrediente añadido correctamente.');
     }
-    
+
     public function updateName(Request $request, $id)
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
         ]);
-    
+
         $ingrediente = Inventary::findOrFail($id);
         $ingrediente->nombre = $request->nombre;
         $ingrediente->save();
-    
+
         return response()->json([
             'success' => true,
             'newName' => $ingrediente->nombre
         ]);
     }
-    
-    
-        // Método para actualizar el stock de un ingrediente existente
+
+
+    // Método para actualizar el stock de un ingrediente existente
     public function updateStock(Request $request, $id_ing)
     {
         $request->validate([
@@ -117,50 +220,6 @@ class InventaryController extends Controller
             'newStock' => $ingrediente->stock,
             'maxStock' => $ingrediente->cantidad_total
         ]);
-    }
-   // Método para modificar el nombre de un ingrediente
-   // Método para modificar el nombre de un ingrediente
-public function changeName(Request $request, $id_ing)
-{
-    // Validar los datos de entrada
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-    ]);
-
-    // Buscar el ingrediente por su ID
-    $ingrediente = Inventary::findOrFail($id_ing);
-
-    // Comprobar si ya existe un ingrediente con el mismo nombre
-    $existingIngredient = Inventary::whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])
-        ->where('id_ing', '!=', $id_ing) // Excluir el actual
-        ->first();
-
-    if ($existingIngredient) {
-        return response()->json([
-            'success' => false,
-            'error' => 'Ya existe un ingrediente con este nombre.'
-        ], 400);
-    }
-
-    // Actualizar el nombre
-    $ingrediente->nombre = $request->nombre;
-    $ingrediente->save();
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Nombre actualizado correctamente.',
-        'newName' => $ingrediente->nombre
-    ]);
-}
-   
-   
-    // Método para eliminar un ingrediente
-    public function destroy($id_ing)
-    {
-        $ingrediente = Inventary::findOrFail($id_ing);
-        $ingrediente->delete();
-
-        return redirect()->route('ingredientes.index')->with('success', 'Ingrediente eliminado correctamente.');
     }
 
     // Método para obtener un ingrediente de forma dinámica (opcional, para AJAX)
