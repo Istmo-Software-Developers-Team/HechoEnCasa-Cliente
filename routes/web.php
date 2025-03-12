@@ -38,3 +38,6 @@ Route::delete('/ingredientes/delete/{id}', [InventaryController::class, 'destroy
 
 //rutas para los postres
 Route::resource('postres', 'App\Http\Controllers\DessertsController');
+Route::resource('categorias', 'App\Http\Controllers\CategoryController');
+Route::resource('emergentes', 'App\Http\Controllers\EmergentController');
+Route::resource('temporada', 'App\Http\Controllers\SeasonController');

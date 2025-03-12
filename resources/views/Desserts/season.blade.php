@@ -7,7 +7,7 @@
             <!-- Contenedor superior con botones y barra de búsqueda -->
             <div class="top-container">
                 <div class="menu-buttons">
-                    <button class="menu-btn active" onclick="window.location.href='{{ route('postres.index') }}'">
+                    <button class="menu-btn " onclick="window.location.href='{{ route('postres.index') }}'">
                         Fijos
                     </button>
                     <button class="menu-btn" onclick="window.location.href='{{ route('categorias.index') }}'">
@@ -16,7 +16,7 @@
                     <button class="menu-btn" onclick="window.location.href='{{ route('emergentes.index') }}'">
                         Emergentes
                     </button>
-                    <button class="menu-btn " onclick="window.location.href='{{ route('temporada.index') }}'">
+                    <button class="menu-btn active" onclick="window.location.href='{{ route('temporada.index') }}'">
                         Temporada
                     </button>
                 </div>
@@ -65,32 +65,48 @@
                                     @endforeach
                                 </p>
 
-                                <div class="paquetes-container">
-                                    <label for="unidadSeleccionada"><strong>Paquetes</strong></label>
-                                    <select id="unidadSeleccionada-{{ $postre->id_postre }}" class="unidad-seleccionada" onchange="actualizarPaquetes('{{ $postre->id_postre }}')">
-                                        @foreach($postre->unidadesMedida as $unidad)
-                                            <option value="{{ $unidad->id_um }}">{{ $unidad->nombre_unidad }}</option>
-                                        @endforeach
-                                    </select>
-                                
-                                    <div id="paquetes-{{ $postre->id_postre }}" class="paquetes-info">
-                                        @foreach($postre->unidadesMedida->unique('cantidad') as $unidad)
-                                        <div class="paquete" data-unidad="{{ $unidad->id_um }}">
-                                            <button class="paquete-btn">{{ $unidad->cantidad }}</button>
-                                        </div>
-                                    @endforeach
-                                    
-                                    </div>
+                    <!-- Sección de paquetes -->
+                    <div class="paquetes-container" id="paquetes-container-{{ $postre->id_postre }}">
+                        <label for="unidadSeleccionada"><strong>Paquetes</strong></label>
+                        <select id="unidadSeleccionada-{{ $postre->id_postre }}" class="unidad-seleccionada" onchange="actualizarPaquetes('{{ $postre->id_postre }}')">
+                            @foreach($postre->unidadesMedida as $unidad)
+                                <option value="{{ $unidad->id_um }}">{{ $unidad->nombre_unidad }}</option>
+                            @endforeach
+                        </select>
+
+                        <div id="paquetes-{{ $postre->id_postre }}" class="paquetes-info">
+                            @foreach($postre->unidadesMedida->unique('cantidad') as $unidad)
+                                <div class="paquete" data-unidad="{{ $unidad->id_um }}">
+                                    <button class="paquete-btn">{{ $unidad->cantidad }}</button>
                                 </div>
-                                
-                                
-                                
-                                <p><strong>Requiere mínimo:</strong> <input type="checkbox" id="modal-checkbox-minimo-{{ $postre->id_postre }}" onclick="toggleMinimo('{{ $postre->id_postre }}')" {{ $postre->requiere_minimo ? 'checked' : '' }}></p>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Sección para mostrar el mínimo cuando está marcado -->
+                    <div id="minimo-container-{{ $postre->id_postre }}" class="minimo-info" style="display: none;">
+                        <p><strong>Mínimo:</strong> 
+                            <span id="minimo-{{ $postre->id_postre }}">
+                                @foreach($postre->unidadesMedida as $unidad)
+                                    @if($unidad->requiere_minimo)
+                                        {{ $unidad->cantidad }}
+                                    @endif
+                                @endforeach
+                            </span>
+                        </p>
+                    </div>
+
+                    <!-- Checkbox -->
+                    <p>
+                        <strong>Requiere mínimo:</strong> 
+                        <input type="checkbox" id="modal-checkbox-minimo-{{ $postre->id_postre }}" onclick="toggleMinimo('{{ $postre->id_postre }}')" {{ $postre->requiere_minimo ? 'checked' : '' }}>
+                    </p>
+
                             </div>
                         </div>
                     @endforeach
                 </div>
-        </div>
+
         </div>
     </div>
 </div>
@@ -103,57 +119,32 @@
     <div class="modal-content">
         <span class="close-btn" onclick="cerrarModalNuevoPostre()">&times;</span>
         <h2>Añadir Nuevo Postre</h2>
-        <form action="{{ route('postres.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url('postres.store') }}" method="post" enctype="multipart/form-data">
             @csrf
             
-            <label></label>
-            <input type="file" name="imagen" id="imagen"><br>
-
-            <label></label>
-            <input type="text" name="nombre" id="nombre" placeholder="Nombre del postre" required><br>
-
-            <label>Categoría:</label>
-            <select name="id_categoria" id="id_categoria" required>
-                @foreach ($categorias as $categoria)
-                    <option value="{{ $categoria->id_cat }}">{{ $categoria->nombre }}</option>
-                @endforeach
-            </select><br>
-
-            <label>Recetas:</label>
-            <select name="id_receta[]" id="id_receta" multiple>
-                @foreach ($recetas as $receta)
-                    <option value="{{ $receta->id_receta }}">{{ $receta->nombre }}</option>
-                @endforeach
-            </select><br>
+                <input type="file" name="imagen" id="imagen" placeholder="Imagen del postre"><br>
+                <input type="text" name="nombre" id="nombre" placeholder="Nombre del postre"><br>
+                <select name="id_categoria" id="id_categoria">
+                    <option value="1">Pays</option>
+                    <option value="2">Flanes</option>
+                    <option value="3">Galletas</option>
+                    <option value="4">Cookie cake</option>
+                    <option value="5">Cupcakes</option>
+                    <option value="6">Mostachon</option>
+                    <option value="7">Cheesecake</option>
+                    <option value="8">Donut Cakes</option>
+                    <option value="9">Profiteroles</option>
+                    <option value="10">Brownies</option>
+                    <option value="11">Brownies cake</option>
+                </select><br>    
+                <input type="text" name="descripcion" id="descripcion" placeholder="Descripción del postre"><br>
+                <input type="text" name="atributos extra" id="atributos_extra" placeholder="Atributos extra"><br>
+                <input type="text" name="paquete" id="paquete" placeholder="Paquete"><br>
+                <input type="checkbox" name="requiere minimo" id="requiere_minimo" value="1">requiere mínimo<br>
+                <input type="submit" value="Agregar postre">
             
-            <label>Descripción:</label>
-            <input type="text" name="descripcion" id="descripcion" placeholder="Descripción del postre" required><br>
-
-            <label>Atributos extra:</label>
-            <select name="atributos_extra[]" id="atributos_extra">
-                @foreach($atributosExtras as $atributo)
-                    <option value="{{ $atributo->id_atributo }}">{{ $atributo->nom_atributo }}</option>
-                @endforeach
-            </select><br>
-            
-
-            <label>Paquete:</label>
-            <input type="text" name="paquete" id="paquete" placeholder="Paquete"><br>
-
-            <label>Stock:</label>
-            <input type="number" name="stock" id="stock" placeholder="Cantidad disponible" required><br>
-
-            <label>Precio:</label>
-            <input type="number" step="0.01" name="precio_emergentes" id="precio" placeholder="Precio del postre" required><br>
-
-            <label>Requiere mínimo:</label>
-            <input type="checkbox" name="requiere_minimo" id="requiere_minimo" value="1"><br>
-
-            <input type="submit" value="Agregar postre">
-        </form>
     </div>
 </div>
-
 
 <style>
 /* Estilos generales */
@@ -331,16 +322,28 @@ function buscarPostres() {
 </script>
     
 <script>
-    function toggleMinimo(id) {
-        const checkbox = document.getElementById('checkbox-minimo-' + id);
-        const infoDiv = document.getElementById('paquete-info-' + id);
-        
-        if (checkbox.checked) {
-            infoDiv.innerHTML = `<p><strong>Mínimo:</strong> {{ $postre->minimo }} piezas</p>`;
-        } else {
-            infoDiv.innerHTML = `<p><strong>Paquetes:</strong> {{ $postre->paquete }}</p>`;
+        function toggleMinimo(postreId) {
+            console.log(`Toggle mínimo ejecutado para el postre ID: ${postreId}`);
+
+            const checkbox = document.getElementById(`modal-checkbox-minimo-${postreId}`);
+            const paquetesContainer = document.getElementById(`paquetes-container-${postreId}`);
+            const minimoContainer = document.getElementById(`minimo-container-${postreId}`);
+
+            if (!checkbox || !paquetesContainer || !minimoContainer) {
+                console.error(`No se encontraron los elementos para el postre ID: ${postreId}`);
+                return;
+            }
+
+            if (checkbox.checked) {
+                console.log("Ocultando paquetes y mostrando mínimo.");
+                paquetesContainer.style.display = "none"; // Oculta los paquetes
+                minimoContainer.style.display = "block"; // Muestra el mínimo
+            } else {
+                console.log("Mostrando paquetes y ocultando mínimo.");
+                paquetesContainer.style.display = "block"; // Muestra los paquetes
+                minimoContainer.style.display = "none"; // Oculta el mínimo
+            }
         }
-    }
 </script>
 
 <script>
@@ -349,7 +352,7 @@ function abrirModalNuevoPostre() {
     document.getElementById('modalNuevoPostre').classList.add("active");
 }
 function cerrarModalNuevoPostre() {
-    document.getElementById('modalNuevoPostre').classList.remove("none");
+    document.getElementById('modalNuevoPostre').classList.remove("active");
 }
 </script>
 
