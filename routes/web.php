@@ -19,6 +19,14 @@ Route::get('/notificaciones/count', [NotificationController::class, 'countNotifi
 Route::get('recetas', [RecipeController::class, 'index'])->name('recipe.index');
 Route::get('/recetas/lista', [RecipeController::class, 'showrecipe']);
 Route::get('/categoria/{categorianombre}', [RecipeController::class, 'obtenerCategoria']);
+Route::get('/Ing', [RecipeController::class, 'Ingredientes']);
+Route::get('/Uni', [RecipeController::class, 'Unidad']);
+Route::post('/nuevo', [RecipeController::class, 'newRecipe']);
+Route::post('/nuevoIng', [RecipeController::class, 'newIng']);
+Route::delete('/eliminar', [RecipeController::class, 'deleteRecipe']);
+Route::delete('/eliminarIng', [RecipeController::class, 'deleteIng']);
+
+
 
 // Ruta para el inventario No borrar Jared
 Route::get('/ingredientes', [InventaryController::class, 'index'])->name('ingredientes.index');

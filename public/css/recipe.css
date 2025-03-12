@@ -146,7 +146,7 @@ body {
 
 .modal-content {
     background: white;
-    width: 400px;
+    width: 800px;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -199,6 +199,10 @@ th {
     color: red;
 }
 
+.save-btn {
+    color: green;
+}
+
 .head{
     display: flex;
     flex-direction: row;
@@ -219,45 +223,32 @@ th {
     padding: .2em;
 }
 
-#menu {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    display: none; 
-    flex-direction: column;
-    align-items: center;
-    width: 250px;
-    padding: 20px;
-    z-index: 1000; 
-}
-
-.menu-item {
-    padding: 10px;
-    width: 100%;
-    text-align: center;
-}
-
-.menu-item input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.menu-item button {
-    width: 100%;
-    padding: 10px;
-    background-color: #f5d7a5;
-    border: none;
-    border-radius: 5px;
+.delete-recipe{
+    color: red;
     cursor: pointer;
 }
 
-.menu-item button:hover {
-    background-color: #e0b87c;
+.add-recipe{
+    color: green;
+    cursor: pointer;
+}
+
+.add-btn{
+    max-width: max-content;
+}
+
+.selec-ing{
+    width: 150px;
+}
+
+.num-tb{
+    width: 150px;
+    
+}
+
+.op-recipe{
+    display: flex; 
+    flex-direction: row; 
+    justify-content:center;
+    gap: 1em;
 }
