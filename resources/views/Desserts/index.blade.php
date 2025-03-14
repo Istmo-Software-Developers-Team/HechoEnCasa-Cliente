@@ -55,7 +55,17 @@
                         <div class="modal" id="modalPostre{{ $postre->id_postre }}">
                             <div class="modal-content">
                                 <span class="close-btn" onclick="cerrarModalDetalle('{{ $postre->id_postre }}')">&times;</span>
-                                <img src="{{ asset($postre->imagen) }}" alt="{{ $postre->nombre }}" class="w-full h-40 object-cover rounded">
+
+                                <!-- Contenedor de la imagen con botón de edición -->
+                                <div class="image-container">
+                                    <img src="{{ asset($postre->imagen) }}" alt="{{ $postre->nombre }}" class="postre-img">
+                                    
+                                    <!-- Botón para cambiar la imagen -->
+                                    <button class="edit-image-btn" onclick="abrirEditarImagen('{{ $postre->id_postre }}')">
+                                        🖊
+                                    </button>
+                                </div>
+                                
                                 <h2 class="modal-header">{{ $postre->nombre }}</h2>
                                 <p><strong>Categoría:</strong> {{ $postre->categoria ? $postre->categoria->nombre : 'Sin categoría' }}</p>
                                 <p><strong>Descripción:</strong> {{ $postre->descripcion }}</p>
@@ -98,10 +108,28 @@
 <!-- Botón flotante para agregar postre -->
 <button id="float-btn" onclick="abrirModalNuevoPostre()">+</button>
 
+<!-- Modal para editar imagen del postre -->
+<div class="modal" id="modalEditarImagen">
+    <div class="modal-content">
+        <span class="close-btn" onclick="cerrarEditarImagen('{{ $postre->id_postre }}')">&times;</span>
+        <h2>Editar Imagen del Postre</h2>
+        <form action="{{ route('postres.updateImagen') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="id_postre" id="editarImagenId">
+            
+            <label>Nueva Imagen:</label>
+            <input type="file" name="imagen" required><br>
+            
+            <input type="submit" value="Actualizar Imagen">
+        </form>
+    </div>
+</div>
+
+
 <!-- Modal para añadir un nuevo postre -->
 <div class="modal" id="modalNuevoPostre">
     <div class="modal-content">
-        <span class="close-btn" onclick="cerrarModalNuevoPostre()">&times;</span>
+        <span class="close-btn" onclick="cerrarModalNuevoPostre('{{ $postre->id_postre }}')">&times;</span>
         <h2>Añadir Nuevo Postre</h2>
         <form action="{{ route('postres.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -120,7 +148,7 @@
             </select><br>
 
             <label>Recetas:</label>
-            <select name="id_receta[]" id="id_receta" multiple>
+            <select name="id_receta[]" id="id_receta" multiple  required>
                 @foreach ($recetas as $receta)
                     <option value="{{ $receta->id_receta }}">{{ $receta->nombre }}</option>
                 @endforeach
@@ -154,6 +182,38 @@
     </div>
 </div>
 
+
+<style>
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.postre-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.edit-image-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.edit-image-btn:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+</style>
 
 <style>
 /* Estilos generales */
@@ -291,6 +351,18 @@
 </style>
 
 <script>
+    function abrirEditarImagen(id) {
+        document.getElementById('editarImagenId').value = id;
+        document.getElementById('modalEditarImagen').classList.add("active");
+    }
+    
+    function cerrarEditarImagen() {
+        document.getElementById('modalEditarImagen').classList.remove("active");
+    }
+    </script>
+    
+
+<script>
 /* Abrir y cerrar modales de detalle */
 function abrirModalDetalle(id) {
     let modal = document.getElementById('modalPostre' + id);
@@ -308,6 +380,16 @@ function cerrarModalDetalle(id) {
     }
 }
 
+</script>
+
+<script>
+    /* Abrir y cerrar modal de creación */
+    function abrirModalNuevoPostre() {
+        document.getElementById('modalNuevoPostre').classList.add("active");
+    }
+    function cerrarModalNuevoPostre() {
+        document.getElementById('modalNuevoPostre').classList.remove("active");
+    }
 </script>
 
 <script>
@@ -341,16 +423,6 @@ function buscarPostres() {
             infoDiv.innerHTML = `<p><strong>Paquetes:</strong> {{ $postre->paquete }}</p>`;
         }
     }
-</script>
-
-<script>
-/* Abrir y cerrar modal de creación */
-function abrirModalNuevoPostre() {
-    document.getElementById('modalNuevoPostre').classList.add("active");
-}
-function cerrarModalNuevoPostre() {
-    document.getElementById('modalNuevoPostre').classList.remove("none");
-}
 </script>
 
 <script>
