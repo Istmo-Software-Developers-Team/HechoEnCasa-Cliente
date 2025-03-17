@@ -13,7 +13,7 @@ class Inventary extends Model
     protected $table = 'ingrediente';
 
     // Campos permitidos para la asignación masiva
-    protected $fillable = ['nombre', 'uni_total', 'stock'];
+    protected $fillable = ['nombre', 'uni_total', 'stock', 'cantidad_min'];
     protected $primaryKey = 'id_ing';
 
     // Deshabilitar timestamps

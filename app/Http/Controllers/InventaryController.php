@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Inventary; // Modelo Inventary
+use App\Models\Inventary;
+use App\Models\UnidadIngrediente;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InventaryController extends Controller
 {
@@ -20,8 +22,9 @@ class InventaryController extends Controller
     {
         $recetas = DB::table('ingrediente as p')
             ->join('unidad_ingrediente as a', 'a.id_unidad', '=', 'p.uni_total')
-            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min', 'p.id_ing')
+            ->select('p.nombre', 'a.nombre_unidad', 'p.stock', 'p.cantidad_min', 'p.id_ing', 'p.uni_total')
             ->get();
+
         return response()->json($recetas);
     }
 
@@ -54,45 +57,45 @@ class InventaryController extends Controller
         ]);
     }
 
+    public function edit($id)
+    {
+        $ingrediente = Inventary::find($id);
+        if (!$ingrediente) {
+            return response()->json(['error' => 'Ingrediente no encontrado'], 404);
+        }
+        return response()->json($ingrediente);
+    }
+
+    // Actualizar ingrediente
     public function update(Request $request, $id)
     {
-        try {
-            $ingrediente = Inventary::findOrFail($id);
-            $cantidad = intval($request->cantidad);
+        Log::info("Datos recibidos en update:", $request->all()); // 🔍 Verifica los datos que llegan
 
-            if (!in_array($request->operacion, ['add', 'remove'])) {
-                return response()->json(['error' => 'Operación inválida'], 400);
-            }
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'uni_total' => 'required|integer|exists:unidad_ingrediente,id_unidad',
+            'stock' => 'required|integer|min:1',
+            'cantidad_min' => 'required|integer|min:1'
+        ]);
 
-            if ($request->operacion === "add") {
-                $ingrediente->stock += $cantidad;
-            } elseif ($request->operacion === "remove") {
-                $ingrediente->stock = max(0, $ingrediente->stock - $cantidad);
-            }
+        $ingrediente = Inventary::find($id);
 
-            $ingrediente->save();
-
-            return response()->json([
-                'success' => true,
-                'stock' => $ingrediente->stock
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Error interno del servidor',
-                'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile()
-            ], 500);
-        }
-        $ingrediente = Inventary::find($id_ing);
-
-        if ($ingrediente) {
-            $ingrediente->nombre = $request->nombre;
-            $ingrediente->save();
-            return response()->json(["mensaje" => "Ingrediente actualizado"]);
+        if (!$ingrediente) {
+            return response()->json(['error' => 'Ingrediente no encontrado'], 404);
         }
 
-        return response()->json(["error" => "Ingrediente no encontrado"], 404);
+        Log::info("Ingrediente encontrado: ", $ingrediente->toArray()); // 🔍 Verifica si el ingrediente existe
+
+        $ingrediente->update([
+            'nombre' => $request->nombre,
+            'uni_total' => $request->uni_total,
+            'stock' => $request->stock,
+            'cantidad_min' => $request->cantidad_min
+        ]);
+
+        Log::info("Ingrediente después de actualizar: ", $ingrediente->toArray()); // 🔍 Verifica si se actualizó
+
+        return response()->json(['message' => 'Ingrediente actualizado correctamente'], 200);
     }
 
     public function destroy($id)
@@ -151,29 +154,21 @@ class InventaryController extends Controller
     // Método para agregar un nuevo ingrediente
     public function store(Request $request)
     {
-        // Validar los datos básicos
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'id_unidad' => 'required|integer|exists:unidad_ingrediente,id_unidad',
-            'stock' => 'required|integer|min:0',
+            'uni_total' => 'required|integer|exists:unidad_ingrediente,id_unidad',
+            'stock' => 'required|integer|min:1',
+            'cantidad_min' => 'required|integer|min:1'
         ]);
 
-        // Comprobar si ya existe un ingrediente con el mismo nombre (insensible a mayúsculas/minúsculas)
-        $existingIngredient = Inventary::whereRaw('LOWER(nombre) = ?', [strtolower($request->nombre)])->first();
-
-        if ($existingIngredient) {
-            return redirect()->back()->withErrors(['nombre' => 'Ya existe un ingrediente con este nombre.'])->withInput();
-        }
-
-        // Crear el nuevo ingrediente si no existe duplicado
         Inventary::create([
-            'nombre' => $request->input('nombre'),
-            'id_unidad' => $request->input('id_unidad'),
-            'uni_total' => $request->input('id_unidad'),
-            'stock' => $request->input('stock'),
+            'nombre' => $request->nombre,
+            'uni_total' => $request->uni_total,
+            'stock' => $request->stock,
+            'cantidad_min' => $request->cantidad_min
         ]);
 
-        return redirect()->back()->with('success', 'Ingrediente añadido correctamente.');
+        return response()->json(['message' => 'Ingrediente agregado correctamente'], 200);
     }
 
     public function updateName(Request $request, $id)
@@ -222,9 +217,78 @@ class InventaryController extends Controller
         ]);
     }
 
-    // Método para obtener un ingrediente de forma dinámica (opcional, para AJAX)
-    public function getIngrediente(Inventary $inventary)
+    function getUnities()
     {
-        return response()->json($inventary);
+        return response()->json(UnidadIngrediente::select('id_unidad', 'nombre_unidad')->get());
+    }
+
+    // Método para obtener un ingrediente de forma dinámica (opcional, para AJAX)
+    public function getIngrediente($id)
+    {
+        $ingrediente = Inventary::with('unidad')->find($id);
+
+        if (!$ingrediente) {
+            return response()->json(['error' => 'Ingrediente no encontrado'], 404);
+        }
+
+        return response()->json($ingrediente);
+    }
+
+    function addUnity(Request $request)
+    {
+        $request->validate([
+            'nombre_unidad' => 'required|string|max:255',
+            'abreviacion' => 'required|string|max:10',
+        ]);
+
+        $unidad = UnidadIngrediente::create([
+            'nombre_unidad' => $request->nombre_unidad,
+            'abreviacion' => $request->abreviacion,
+        ]);
+
+        return response()->json(['message' => 'Unidad agregada correctamente', 'unidad' => $unidad], 201);
+    }
+
+    public function getFilters()
+    {
+        try {
+            $unidades = UnidadIngrediente::select('id_unidad', 'nombre_unidad')->get();
+            $agotados = Inventary::where('stock', '<=', 0)->pluck('id_ing');
+            $casiAgotados = Inventary::whereColumn('stock', '<=', 'cantidad_min')
+                ->where('stock', '>', 0)
+                ->pluck('id_ing');
+
+            return response()->json([
+                'unidades' => $unidades,
+                'agotados' => $agotados,
+                'casiAgotados' => $casiAgotados
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function filterIngredientes(Request $request)
+    {
+        $query = Inventary::with('unidad');
+
+        // Filtrar por unidad de medida
+        if ($request->has('unidad') && $request->unidad !== 'all') {
+            $unidadId = str_replace('unidad-', '', $request->unidad);
+            $query->where('id_unidad', $unidadId);
+        }
+
+        // Filtrar ingredientes agotados
+        if ($request->has('filtro') && $request->filtro === 'agotados') {
+            $query->where('stock', '<=', 0);
+        }
+
+        // Filtrar ingredientes casi agotados
+        if ($request->has('filtro') && $request->filtro === 'casi-agotados') {
+            $query->whereColumn('stock', '<=', 'cantidad_min')
+                ->where('stock', '>', 0);
+        }
+
+        return response()->json($query->get());
     }
 }

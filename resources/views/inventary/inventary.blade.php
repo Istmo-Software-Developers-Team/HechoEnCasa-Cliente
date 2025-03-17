@@ -133,7 +133,16 @@
                     oninput="searchIngredients()" 
                 />
             </div>
-        <div class="caja-filtrar"><i class="bx bx-filter bx-md"></i></div>
+        <div class="caja-filtrar">
+          <i class="bx bx-filter bx-md"></i>
+          <div id="filterMenu" class="filter-menu hidden">
+            <select id="filterSelect">
+                <option value="all">Todos</option>
+                <option value="agotados">Agotados</option>
+                <option value="casi-agotados">Casi Agotados</option>
+            </select>
+        </div>
+        </div>
       </div>
       <!-- Elementos -->
       <section class="contenedor-elementos">

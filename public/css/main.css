@@ -168,6 +168,8 @@ body {
     box-shadow: var(--buscar-sombra);
     color: var(--lupa-color);
     flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
 }
 
 /* == Caja de un elemento ==  */
@@ -347,4 +349,76 @@ body {
 .current-stock {
     font-size: 12px;
     color: #727272;
+}
+
+/* === Confirmar Eliminación ===  */
+
+.popup-delete {
+    box-shadow: var(--main-sombra);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    background-color: #fff;
+    border-radius: var(--borde-redondeo-box);
+}
+
+.warning-icon {
+    color: var(--ingrediente-vacio);
+}
+
+.warning-msg {
+    font-weight: bold;
+    color: #6a6a6a;
+}
+
+.btns-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn-question {
+    border-radius: var(--borde-redondeo-box);
+    text-align: center;
+    color: #fff;
+    padding: 5px 10px 5px 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.cancel {
+    background-color: #a1a1a1;
+    transition: var(--transicion);
+}
+.cancel:hover {
+    background-color: #868686;
+}
+
+.delete {
+    background-color: var(--ingrediente-vacio);
+    transition: var(--transicion);
+}
+.delete:hover {
+    background-color: #ff3030;
+}
+
+/* === Agregar Ingrediente ===  */
+
+.input-container {
+    display: flex;
+}
+
+/* === Fondo Oscurecido ===  */
+
+.dark-bg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100vh;
+    z-index: 200;
 }

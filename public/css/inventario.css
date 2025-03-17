@@ -201,13 +201,18 @@ progress.verde::-webkit-progress-value {
     width: 50%;
 }
 
+.btns {
+    display: flex;
+    gap: 10px;
+}
+
 .popup .btns {
     display: flex; /* Usamos flexbox para alinear el contenido */
     justify-content: flex-end; /* Alineamos el contenido hacia la derecha */
     margin-top: 20px; /* Agregamos un margen superior para que el botón no esté tan pegado */
 }
 
-.popup .btn-aceptar {
+.popup .btn-form {
     background-color: #bb1b15; /* Color de fondo del botón */
     color: white; /* Color del texto del botón */
     border: none; /* Quitamos el borde */
@@ -216,6 +221,10 @@ progress.verde::-webkit-progress-value {
     font-size: 16px; /* Tamaño de fuente */
     cursor: pointer; /* Cambiar el cursor para indicar que es un botón clickeable */
     transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+.btns .add {
+    background-color: #27ae60;
 }
 
 .popup .btn-aceptar:hover {
